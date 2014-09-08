@@ -13,10 +13,10 @@ totals<-aggregate(Emissions ~ year + fips, sum,
 ## rename fips from code to Location name
 totals[totals$fips=="24510",2] <-"Baltimore"
 totals[totals$fips=="06037",2] <-"L.A. County"
-
+# get the base values for the 2 sites
 bt_start <-head(totals[totals$fips=="Baltimore",3],n=1)
 la_start <-head(totals[totals$fips=="L.A. County",3],n=1)
-# Compute Emissions vs 1999 levels
+# Compute Emissions as a percentage change from 1999 levels
 totals[totals$fips=="Baltimore",4] <-
   totals[totals$fips=="Baltimore",3]/ bt_start * 100 - 100
 totals[totals$fips=="L.A. County",4] <-
@@ -24,10 +24,6 @@ totals[totals$fips=="L.A. County",4] <-
 colnames(totals)[4] <-"delta"
 
 png(filename="plot6.png",width=480,height=480,units="px")
-
-## plot emissions vs year for each location
-#qplot(year,Emissions,data=totals,facets=fips~.,geom=c("point","smooth"),method="lm",
-#      main="Baltimore vs L.A. County PM25 from vehicles",ylab="Emissions (tons)",xlab="Year")
 
 plot(totals$year[totals$fips=="Baltimore"],totals$delta[totals$fips=="Baltimore"],
      ylim=c(min(totals$delta),max(totals$delta)),col="red",
